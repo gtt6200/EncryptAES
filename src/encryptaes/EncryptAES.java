@@ -29,7 +29,7 @@ public class EncryptAES implements Serializable {
             //reducir la vulnerabilidad de ataques con fuerza bruta con Hmac (código de autentificacion)
             //SHA256 algoritmo de encriptación 
             keySpec = new PBEKeySpec(secretKeyAES.toCharArray(), saltAES.getBytes(), 65536, 256);
-            //PBE encriptci´n basada en password -- 65536 numero de veces que va a iterar
+            //PBE encriptción basada en password -- 65536 numero de veces que va a iterar
             //256 la longitud d ela cadena
             secretKeyTemp = secretKeyFactory.generateSecret(keySpec);
             //Creamos una SecretKey usando la clase SecretKeyFactory y pasando el cifrado basado en contraseña (PBEKeySpec)
@@ -84,11 +84,14 @@ public class EncryptAES implements Serializable {
         Scanner sc = new Scanner(System.in);
         System.out.println("Ingrese texto a encriptar:" );
         String data = sc.nextLine();
-        System.out.println("Datos encriptados: " + encrypt.getAES(data));
+        System.out.println("==============================================");
+        System.out.println("Datos encriptados: \n" + encrypt.getAES(data));
+        System.out.println("==============================================");
         System.out.println("Copie el código generado de la parte  \nsuperior para poder desencriptarlo");
+        System.out.println("==============================================");
         System.out.println("Ingrese código a desencriptar: ");
         String code = sc.nextLine();
-        System.out.println("Datos desencriptados: " + encrypt.getAESDecrypt(code));
+        System.out.println("Datos desencriptados:\n" + "---- " + encrypt.getAESDecrypt(code) + " ----");
     }
     
 }
