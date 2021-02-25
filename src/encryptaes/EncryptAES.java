@@ -20,7 +20,8 @@ public class EncryptAES implements Serializable {
     SecretKey secretKeyTemp;
     public EncryptAES() {
         SecretKeyFactory secretkeyfactory;
-        
+                    //Instanciamos una clase SecretKeyFactory con el nombre del algoritmo que necesitamos 
+            //es una fábrica de claves secretas
         KeySpec keySpec;
         try {
             SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
@@ -31,6 +32,7 @@ public class EncryptAES implements Serializable {
             //PBE encriptci´n basada en password -- 65536 numero de veces que va a iterar
             //256 la longitud d ela cadena
             secretKeyTemp = secretKeyFactory.generateSecret(keySpec);
+            //Creamos una SecretKey usando la clase SecretKeyFactory y pasando el cifrado basado en contraseña (PBEKeySpec)
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -38,11 +40,20 @@ public class EncryptAES implements Serializable {
     
     public String getAES(String data) {
         try {
+            //vector de bloque de 16 bytes
             byte[] iv = new byte[16];
+//Luego inicializamos una clase IvParameterSpec que simplemente especifica el vector de inicialización a usar.
             IvParameterSpec ivParameterSpec = new IvParameterSpec(iv);
+            //Inicializamos una clase SecretKeySpec (especifica una clave secreta de forma independiente 
+    //del proveedor) pasando como parámetro la clave anterior generada en forma de bytes 
+    //y el algoritmo que usamos.
             SecretKeySpec secretKey = new SecretKeySpec(secretKeyTemp.getEncoded(), "AES");
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
             cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivParameterSpec);
+    //Finalmente hacemos uso de la clase Cipher del paquete crypto que proporciona la funcionalidad de 
+    //un cifrado criptográfico para cifrado y descifrado, obtenemos la instancia del algoritmo, 
+    //después usamos el método init con el modo ya sea descifrado o cifrado, la especificación 
+    //de la llave secreta y la especificación del vector de inicialización
             return Base64.getEncoder().encodeToString(cipher.doFinal(data.getBytes("UTF-8")));
         } catch (Exception e) {
             e.printStackTrace();
@@ -54,7 +65,9 @@ public class EncryptAES implements Serializable {
         byte[] iv = new byte[16];
         try {
             IvParameterSpec ivParameterSpec = new IvParameterSpec(iv);
+            
             SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+            
             KeySpec keySpec = new PBEKeySpec(secretKeyAES.toCharArray(), saltAES.getBytes(), 65536, 256);
             SecretKey secretKeyTemp = secretKeyFactory.generateSecret(keySpec);
             SecretKeySpec secretKey = new SecretKeySpec(secretKeyTemp.getEncoded(), "AES");
@@ -69,11 +82,11 @@ public class EncryptAES implements Serializable {
     public static void main(String[] args) {
         EncryptAES encrypt = new EncryptAES();
         Scanner sc = new Scanner(System.in);
-        System.out.println("Palabra a encriptar:" );
+        System.out.println("Ingrese texto a encriptar:" );
         String data = sc.nextLine();
         System.out.println("Datos encriptados: " + encrypt.getAES(data));
-        System.out.println("Copie el código de la parte superior para poder desencriptarlo");
-        System.out.println("Ingrese código de desencriptación: ");
+        System.out.println("Copie el código generado de la parte  \nsuperior para poder desencriptarlo");
+        System.out.println("Ingrese código a desencriptar: ");
         String code = sc.nextLine();
         System.out.println("Datos desencriptados: " + encrypt.getAESDecrypt(code));
     }
